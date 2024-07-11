@@ -1,0 +1,62 @@
+env = LIBVA_DRIVER_NAME,nvidia
+env = XDG_SESSION_TYPE,wayland
+env = GBM_BACKEND,nvidia-drm
+env = __GLX_VENDOR_LIBRARY_NAME,nvidia
+
+# cursor {
+	#no_hardware_cursor = true
+#}
+
+# SETUP STUFF
+exec-once=swaync
+exec-once=waybar
+exec-once=blueman-applet
+
+# KEYBINDS
+$mainMod = SUPER
+bind = $mainMod, Q, exec, kitty
+bind = $mainMod, E, exec, nemo
+bind = $mainMod, C, killactive
+bind = $mainMod, SPACE, exec, tofi-drun | xargs hyprctl dispatch exec --
+bind = $mainMod, F, fullscreen,
+
+# move focus
+bind = $mainMod, H, movefocus, l
+bind = $mainMod, J, movefocus, d
+bind = $mainMod, K, movefocus, u
+bind = $mainMod, L, movefocus, r
+
+# MONITOR
+monitor=DP-2,2560x1440@165.00Hz,0x0,1
+
+
+# GENERAL APPEARANCE
+general {
+	gaps_in = 2
+	gaps_out = 0
+	border_size = 1
+}
+
+decoration {
+	drop_shadow = no
+	rounding = 1
+	blur {
+		enabled = 1
+		size = 2
+		passes = 1
+		new_optimizations = true
+	}
+}
+
+animations {
+	enabled = no
+}
+
+debug {
+	disable_logs = false
+}
+
+master {
+	new_on_top = true
+	no_gaps_when_only = true
+}

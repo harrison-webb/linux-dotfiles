@@ -1,0 +1,165 @@
+{
+  "layer": "top", "position": "top",
+  "modules-left": ["custom/logo", "hyprland/window" ],
+  "modules-center": [  "hyprland/workspaces"],
+  "modules-right": ["tray",  "custom/clipboard", "idle_inhibitor", "bluetooth", "pulseaudio", "network", "clock" ],
+  "reload_style_on_change":true,
+
+  "custom/logo": {
+    "format": "",
+    "tooltip": false
+  },
+
+  "hyprland/workspaces": {
+	"format": "{icon}",
+	"format-icons": {
+		"1": "[1]",
+		"2": "[2]",
+		"3": "[3]",
+		"4": "[4]",
+		"5": "[5]",
+		"6": "[6]",
+		"7": "[7]",
+		"8": "[8]",
+		"9": "[9]",
+		"active": "[X]",
+		"default": "[X]" 
+	},
+       "persistent-workspaces": {
+         "*": [ 2, 3, 4, 5, 6, 7, 8, 9 ]
+       }
+},
+
+"idle_inhibitor":{
+  "format": "<span font='12'>{icon} </span>",
+  "format-icons": {
+    "activated":"󰈈",
+    "deactivated":"󰈉"
+  }
+},
+
+"custom/clipboard":{
+  "format":"",
+  "on-click": "cliphist list | rofi -dmenu | cliphist decode | wl-copy",
+  "interval":86400
+},
+
+
+"clock": {
+	"format": "{:%d %B %I:%M %p}",
+},
+
+  "bluetooth": {
+  "format-on": "",
+  "format-off": "",
+  "format-disabled": "󰂲",
+  "format-connected": "󰂴",
+  "format-connected-battery": "{device_battery_percentage}% 󰂴",
+  "tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
+  "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}",
+  "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
+  "tooltip-format-enumerate-connected-battery": "{device_alias}\t{device_address}\t{device_battery_percentage}%",
+  "on-click": "rofi-bluetooth",
+ }, 
+
+"network": {
+      "format-wifi": " ",
+      "format-ethernet":" ",
+      "format-disconnected": "",
+      "tooltip-format": "{ipaddr}",
+      "tooltip-format-wifi": "{essid} ({signalStrength}%)  | {ipaddr}",
+      "tooltip-format-ethernet": "{ifname} 🖧 | {ipaddr}",
+      "on-click": "networkmanager_dmenu"
+    },
+
+
+ "disk": {
+    "interval": 30,
+    "format": "  {percentage_used}%",
+    "path": "/"
+  },
+
+  "custom/colorpicker": {
+    "format": "{}",
+    "return-type": "json",
+    "interval": "once",
+    "exec": "~/.config/waybar/scripts/colorpicker.sh -j",
+    "on-click": "sleep 1 && ~/.config/waybar/scripts/colorpicker.sh",
+    "signal": 1
+  },
+
+  "cpu": {
+      "interval": 1,
+      "format": " {usage}%",
+      "min-length": 6,
+      "max-length": 6,
+      "format-icons": ["▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"],
+ },
+
+"memory": {
+  "format": " {percentage}%"
+},
+
+ "hyprland/window": {
+    "format": "( {class} )",
+    "rewrite": {
+         "(.*) - Mozilla Firefox": "🌎 $1",
+         "(.*) - zsh": "> [$1]"
+    }
+},
+
+"temperature": {
+  "format": " {temperatureC}°C",            
+  "format-critical": " {temperatureC}°C",
+  "interval": 1,
+  "critical-threshold": 80,
+  "on-click": "foot btop",
+ },
+
+"pulseaudio": {
+  "format": "{volume}% {icon}",
+  "format-bluetooth":"󰂰",
+  "format-muted": "<span font='12'></span>",
+  "format-icons": {
+    "headphones": "",
+    "bluetooth": "󰥰",
+    "handsfree": "",
+    "headset": "󱡬",
+    "phone": "",
+    "portable": "",
+    "car": "",
+    "default": ["🕨","🕩","🕪"]
+  },
+  "justify": "center",
+  "on-click": "pavucontrol",
+  "tooltip-format": "{icon}  {volume}%"
+},
+
+"jack": {
+    "format": "{} 󱎔",
+    "format-xrun": "{xruns} xruns",
+    "format-disconnected": "DSP off",
+    "realtime": true
+},
+
+"tray": {
+    "icon-size": 14,
+    "spacing": 10
+},
+
+"upower": {
+    "show-icon": false,
+    "hide-if-empty": true,
+    "tooltip": true,
+    "tooltip-spacing": 20
+},
+
+  "custom/powerDraw": {
+    "format": "{}",
+    "interval": 1,
+    "exec": "~/.config/waybar/scripts/powerdraw.sh",
+    "return-type": "json"
+  }
+
+}
+
