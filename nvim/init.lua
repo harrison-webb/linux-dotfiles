@@ -23,6 +23,9 @@ vim.g.loaded_netrwPlugin = 1
 -- Make line numbers default
 vim.opt.number = true
 
+-- colors
+vim.opt.termguicolors = true
+
 -- Disable comments on newline
 vim.opt.formatoptions:remove({ "c", "r", "o" })
 
@@ -60,7 +63,8 @@ vim.opt.splitbelow = true
 vim.opt.inccommand = "split"
 
 -- Show which line your cursor is on
-vim.opt.cursorline = false
+vim.opt.cursorline = true
+vim.opt.cursorlineopt = "line"
 
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.o.scrolloff = 3
@@ -137,28 +141,28 @@ vim.api.nvim_create_autocmd("BufEnter", {
 
 -- Format go files and organize imports on save
 -- https://github.com/golang/tools/blob/master/gopls/doc/vim.md#neovim-imports
-vim.api.nvim_create_autocmd("BufWritePre", {
-	pattern = "*.go",
-	callback = function()
-		local params = vim.lsp.util.make_range_params()
-		params.context = { only = { "source.organizeImports" } }
-		-- buf_request_sync defaults to a 1000ms timeout. Depending on your
-		-- machine and codebase, you may want longer. Add an additional
-		-- argument after params if you find that you have to write the file
-		-- twice for changes to be saved.
-		-- E.g., vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, 3000)
-		local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params)
-		for cid, res in pairs(result or {}) do
-			for _, r in pairs(res.result or {}) do
-				if r.edit then
-					local enc = (vim.lsp.get_client_by_id(cid) or {}).offset_encoding or "utf-16"
-					vim.lsp.util.apply_workspace_edit(r.edit, enc)
-				end
-			end
-		end
-		vim.lsp.buf.format({ async = false })
-	end,
-})
+-- vim.api.nvim_create_autocmd("BufWritePre", {
+-- 	pattern = "*.go",
+-- 	callback = function()
+-- 		local params = vim.lsp.util.make_range_params()
+-- 		params.context = { only = { "source.organizeImports" } }
+-- 		-- buf_request_sync defaults to a 1000ms timeout. Depending on your
+-- 		-- machine and codebase, you may want longer. Add an additional
+-- 		-- argument after params if you find that you have to write the file
+-- 		-- twice for changes to be saved.
+-- 		-- E.g., vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, 3000)
+-- 		local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params)
+-- 		for cid, res in pairs(result or {}) do
+-- 			for _, r in pairs(res.result or {}) do
+-- 				if r.edit then
+-- 					local enc = (vim.lsp.get_client_by_id(cid) or {}).offset_encoding or "utf-16"
+-- 					vim.lsp.util.apply_workspace_edit(r.edit, enc)
+-- 				end
+-- 			end
+-- 		end
+-- 		vim.lsp.buf.format({ async = false })
+-- 	end,
+-- })
 
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
@@ -550,6 +554,7 @@ require("lazy").setup({
 				javascript = { { "prettierd", "prettier" } },
 				cpp = { "clang-format" },
 				c = { "clang-format" },
+				go = { "gofmt", "goimports" },
 			},
 		},
 	},
@@ -682,23 +687,51 @@ if err != nil {
 		end,
 	},
 
-	-- THEME/COLORSCHEME
-	{
-		-- `:Telescope colorscheme` to list all preinstalled colorschemes
-		"rebelot/kanagawa.nvim",
-		lazy = false, -- make sure we load this during startup if it is your main colorscheme
-		priority = 1000, -- make sure to load this before all the other start plugins
-		config = function()
-			require("kanagawa").setup({
-				compile = true,
-				keywordStyle = { italic = false },
-			})
-			-- Load the colorscheme here
-			vim.cmd("colorscheme kanagawa")
+	-- THEME/COLORSCHEMES -----------------------------------------------------------------------------
+	-- {
+	-- 	-- `:Telescope colorscheme` to list all preinstalled colorschemes
+	-- 	"rebelot/kanagawa.nvim",
+	-- 	lazy = false, -- make sure we load this during startup if it is your main colorscheme
+	-- 	priority = 1000, -- make sure to load this before all the other start plugins
+	-- 	config = function()
+	-- 		require("kanagawa").setup({
+	-- 			compile = true,
+	-- 			typeStyle = { italic = true, bold = false },
+	-- 			commentStyle = { italic = true, bold = false },
+	-- 			keywordStyle = { italic = false, bold = false },
+	-- 			-- theme = "wave",
+	-- 		})
+	-- 		-- Load the colorscheme here
+	-- 		vim.cmd("colorscheme kanagawa")
+	--
+	-- 		-- can configure highlights by doing something like vim.cmd.hi("Comment gui=none")
+	-- 	end,
+	-- },
 
-			-- can configure highlights by doing something like vim.cmd.hi("Comment gui=none")
+	-- {
+	-- 	"kepano/flexoki-neovim",
+	-- 	name = "flexoki",
+	-- 	config = function()
+	-- 		vim.cmd("colorscheme flexoki-dark")
+	-- 	end,
+	-- },
+
+	{
+		"savq/melange-nvim",
+		config = function()
+			vim.cmd("colorscheme melange")
 		end,
 	},
+
+	-- {
+	-- 	"marko-cerovac/material.nvim",
+	-- 	config = function()
+	-- 		vim.g.material_style = "darker"
+	-- 		vim.cmd("colorscheme material")
+	-- 	end,
+	-- },
+
+	--------------------------------------------------------------------------------------------------
 
 	-- Highlight todo, notes, etc in comments
 	{
@@ -742,6 +775,14 @@ if err != nil {
 					section_separators = "",
 					component_separators = "",
 					lualine_x = { "searchcount", "hostname", "encoding", "fileformat", "filetype" },
+				},
+				sections = {
+					lualine_c = {
+						{
+							"filename",
+							path = 3,
+						},
+					},
 				},
 			})
 		end,
